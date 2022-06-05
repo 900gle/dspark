@@ -12,23 +12,29 @@ public class Step3 {
         SparkSession spark = SparkSession.builder()
                 .appName("TitanicSurvive")
                 .config("spark.eventLog.enabled", "false")
-                .master("local[1]")
-                .config("spark.executor.memory", "2g")
+                .master("local[*]")
+                .config("spark.executor.memory", "1g")
                 .getOrCreate();
         spark.sparkContext().setLogLevel("ERROR");
 
+        String path = "/Users/doo/project/dspark/test.json";
 
 
 
-//        String path = "/Users/doo/project/dspark/test.json";
+
+        Dataset<Row> peopleDF =
+                spark.read().format("json").load(path);
+
+        peopleDF.select("*").show();
+
+        peopleDF.select("*").write().format("parquet").save("namesAndAges.parquet");
 //
-//
-//        Dataset<Row> peopleDF =
-//                spark.read().format("json").load(path);
-//        peopleDF.select("name").write().format("parquet").save("namesAndAges.parquet");
-
 //        Dataset<Row> df1 = spark.read().text(path);
+
+
 //        df1.show();
+
+
 
 
 //
