@@ -1,0 +1,58 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.doo'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+def sparkVersion = "3.2.1"
+def elasticsearchVersion = "7.9.2"
+
+
+configurations.all {
+    // 변하는 모듈(Changing Module)을 캐시하지 않음
+    resolutionStrategy.cacheChangingModulesFor 0, "seconds"
+    exclude group: "org.slf4j", module: "slf4j-log4j12"
+    exclude group: 'org.codehaus.janino', module: 'janino'
+    exclude group: 'org.codehaus.janino', module: 'commons-compiler'
+
+
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // spark
+    implementation("org.apache.spark:spark-core_2.12:${sparkVersion}")
+    implementation("org.apache.spark:spark-mllib_2.12:${sparkVersion}")
+    implementation("org.apache.spark:spark-mllib-local_2.12:${sparkVersion}")
+    implementation("org.apache.spark:spark-sql_2.12:${sparkVersion}")
+    implementation("org.apache.spark:spark-catalyst_2.12:${sparkVersion}")
+    implementation("org.elasticsearch:elasticsearch-spark-20_2.11:${elasticsearchVersion}")
+    implementation("mysql:mysql-connector-java:5.1.45")
+// https://mvnrepository.com/artifact/org.codehaus.janino/commons-compiler
+//    implementation group: 'org.codehaus.janino', name: 'commons-compiler', version: '3.0.1'
+    implementation group: 'org.codehaus.janino', name: 'janino', version: '3.2.1'
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
